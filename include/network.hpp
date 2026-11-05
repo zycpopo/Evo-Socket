@@ -6,7 +6,7 @@
 class NetWork {
     public:
         NetWork() {
-            DBG_LOG("SIGPIPE INIT");
+            // Do not create a logger during static initialization.
             signal(SIGPIPE, SIG_IGN);
         }
 };

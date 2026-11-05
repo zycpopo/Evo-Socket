@@ -175,7 +175,7 @@ class Util {
         static bool ReadFile(const std::string &filename, std::string *buf) {
             std::ifstream ifs(filename, std::ios::binary);
             if (ifs.is_open() == false) {
-                printf("OPEN %s FILE FAILED!!", filename.c_str());
+                ERR_LOG("OPEN %s FILE FAILED!!", filename.c_str());
                 return false;
             }
             size_t fsize = 0;
@@ -185,7 +185,7 @@ class Util {
             buf->resize(fsize); //开辟文件大小的空间
             ifs.read(&(*buf)[0], fsize);
             if (ifs.good() == false) {
-                printf("READ %s FILE FAILED!!", filename.c_str());
+                ERR_LOG("READ %s FILE FAILED!!", filename.c_str());
                 ifs.close();
                 return false;
             }
@@ -196,7 +196,7 @@ class Util {
         static bool WriteFile(const std::string &filename, const std::string &buf) {
             std::ofstream ofs(filename, std::ios::binary | std::ios::trunc);
             if (ofs.is_open() == false) {
-                printf("OPEN %s FILE FAILED!!", filename.c_str());
+                ERR_LOG("OPEN %s FILE FAILED!!", filename.c_str());
                 return false;
             }
             ofs.write(buf.c_str(), buf.size());

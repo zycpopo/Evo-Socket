@@ -34,6 +34,11 @@ void DelFile(const HttpRequest &req, HttpResponse *rsp)
 }
 int main()
 {
+    loopforge::LogConfig logging;
+    logging.name = "http";
+    logging.file_prefix = "./logs/http-";
+    loopforge::InitLogging(logging);
+    INF_LOG("HTTP server starting on port %d", 8085);
     HttpServer server(8085);
     server.SetThreadCount(3);
     server.SetBaseDir(WWWROOT);//设置静态资源根目录，告诉服务器有静态资源请求到来，需要到哪里去找资源文件

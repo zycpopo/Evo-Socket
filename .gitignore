@@ -1,0 +1,10 @@
+/build*/
+**/logs/
+*.log
+*.exe
+*.o
+/source/echo/main
+/source/http/main
+/test/recv_semantics_test
+/test/logging_test
+/test/.logging-test-output/

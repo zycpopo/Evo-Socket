@@ -1,17 +1,20 @@
-# LoopForge
+# LoopForge + popoLog
 
-基于 C++11和Linux Reactor 模型的轻量级 C++ 网络库
+基于 C++11 和 Linux Reactor 模型的轻量级 C++ 网络库，已集成 popoLog。
+
+这是独立改造副本。接入方式、日志配置、构建测试和边界说明见 [popoLog 接入说明](doc/popoLog接入说明.md)，实际测试范围见 [验证记录](doc/验证记录.md)。
 
 项目使用 Reactor 事件驱动模型，底层基于 `epoll`、`eventfd`、`timerfd` 和非阻塞 Socket，实现 TCP 连接管理、事件循环、线程池、定时器和简单的 HTTP 服务示例。
 
 ## 目录结构
 
 ~~~text
-TcpServer/
+TcpServer-popoLog/
 ├── README.md
 ├── include/                  # 拆分的核心头文件
 │   ├── server.hpp            # 拆分版本统一入口
-│   ├── server_common.hpp     # 公共依赖和日志宏
+│   ├── server_common.hpp     # 公共依赖与日志适配入口
+│   ├── logging.hpp           # popoLog 配置与兼容宏
 │   ├── buffer.hpp            # 缓冲区
 │   ├── socket.hpp            # Socket 封装
 │   ├── channel.hpp           # 文件描述符事件
@@ -24,8 +27,9 @@ TcpServer/
 │   ├── acceptor.hpp          # 监听器
 │   ├── tcp_server.hpp        # TCP 服务器
 │   └── network.hpp           # 网络初始化
+├── third_party/popolog/      # 内置 popoLog 及本地修复记录
 └── source/
-    ├── server.hpp            # 原始单头文件
+    ├── server.hpp            # 转发到 include/server.hpp 的兼容入口
     ├── echo/                 # TCP 回显示例
     │   ├── echo.hpp
     │   ├── main.cc
@@ -85,7 +89,7 @@ g++ -std=c++11 main.cc -I./include -o server -lpthread
 g++ -std=c++11 main.cc -I. -o server -lpthread
 ~~~
 
-不要在同一个源文件中同时包含 `source/server.hpp` 和 `include/server.hpp`，两者都会定义相同的核心类。
+推荐统一使用 `include/server.hpp`；副本中的 `source/server.hpp` 已成为兼容入口，两者使用同一套实现。
 
 ## TCP 服务基本用法
 
@@ -307,7 +311,7 @@ HTTP 示例默认监听 8085 端口，使用三个工作线程，并将当前目
 - 当前没有 TLS/SSL；
 - 静态文件会整体读入内存，不适合直接用于大文件服务；
 - 时间轮容量固定为 60；
-- 当前项目没有自动化测试和 CI 配置；
+- 提供 Socket 接收语义测试、日志集成测试和 TCP/HTTP 回归脚本，尚无 CI 配置；
 - 使用前建议先编译两个示例并进行基本 TCP/HTTP 测试。
 
 

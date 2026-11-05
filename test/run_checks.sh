@@ -116,7 +116,7 @@ cl_probe "超上限 Content-Length"   "99999999"                   413
 
 # ---------------------------------------------------------------- 连接回收
 info "6. 客户端关闭后的连接回收与空转检测"
-before=$(count_log "$LOG_HTTP" 'CLOSE CONNECTION')
+before=$(count_log "$LOG_HTTP" 'RELEASE CONNECTION')
 {
     exec 5<>"/dev/tcp/127.0.0.1/$HTTP_PORT" 2>/dev/null
     printf 'GET /hello HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n' >&5
@@ -132,9 +132,9 @@ c2=$(cpu_ticks "$HTTP_PID")
 delta=$((c2 - c1))
 
 sleep 0.5
-after=$(count_log "$LOG_HTTP" 'CLOSE CONNECTION')
+after=$(count_log "$LOG_HTTP" 'RELEASE CONNECTION')
 if [ "$after" -gt "$before" ]; then
-    ok "客户端关闭后服务端回收了连接（CLOSE 日志 $before -> $after）"
+    ok "客户端关闭后服务端回收了连接（RELEASE 日志 $before -> $after）"
 else
     bad "客户端关闭后服务端未回收连接，存在连接泄漏"
 fi
